@@ -1,0 +1,327 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@gym.com",
+      "password": "adminpassword",
+      "fullName": "Quản Trị Viên",
+      "role": "admin",
+      "phone": "0901234567"
+    },
+    {
+      "id": 2,
+      "email": "user1@mail.com",
+      "password": "userpassword",
+      "fullName": "Nguyễn Văn A",
+      "role": "user",
+      "phone": "0987654321"
+    },
+    {
+      "id": 3,
+      "email": "user2@mail.com",
+      "password": "userpassword2",
+      "fullName": "Trần Thị B",
+      "role": "user",
+      "phone": "0912345678"
+    },
+    {
+      "id": 4,
+      "email": "user3@mail.com",
+      "password": "userpassword3",
+      "fullName": "Lê Văn C",
+      "role": "user",
+      "phone": "0923456789"
+    },
+    {
+      "email": "nmhx@gmail.com",
+      "password": "",
+      "role": "user",
+      "fullName": "nmhx",
+      "id": 5,
+      "phone": "0357321983"
+    },
+    {
+      "email": "hung@gmail.com",
+      "password": "12345678",
+      "role": "user",
+      "fullName": "Nguyễn Mạnh Hùng",
+      "phone": "0987654321",
+      "id": 6
+    }
+  ],
+  "courses": [
+    {
+      "id": 101,
+      "name": "Yoga Giảm Cân",
+      "type": "Yoga",
+      "description": "Thư giãn và đốt calo hiệu quả.",
+      "price": 150000,
+      "imageUrl": "/assets/yoga.jpg",
+      "duration": 60,
+      "instructor": "Nguyễn Thị Yoga",
+      "maxStudents": 20,
+      "level": "Beginner",
+      "equipment": [
+        "Yoga mat",
+        "Yoga block"
+      ],
+      "schedule": {
+        "monday": [
+          "09:00",
+          "18:00"
+        ],
+        "wednesday": [
+          "09:00",
+          "18:00"
+        ],
+        "friday": [
+          "09:00",
+          "18:00"
+        ]
+      }
+    },
+    {
+      "id": 102,
+      "name": "Gym Cường Độ Cao",
+      "type": "Gym",
+      "description": "Bài tập toàn thân cho người mới bắt đầu.",
+      "price": 200000,
+      "imageUrl": "/assets/gym.jpg",
+      "duration": 90,
+      "instructor": "Trần Văn Gym",
+      "maxStudents": 15,
+      "level": "Intermediate",
+      "equipment": [
+        "Dumbbells",
+        "Barbell",
+        "Bench"
+      ],
+      "schedule": {
+        "tuesday": [
+          "07:00",
+          "19:00"
+        ],
+        "thursday": [
+          "07:00",
+          "19:00"
+        ],
+        "saturday": [
+          "08:00",
+          "17:00"
+        ]
+      }
+    },
+    {
+      "id": 103,
+      "name": "Zumba Dance",
+      "type": "Dance",
+      "description": "Các lớp học cardio năng động theo điệu nhạc.",
+      "price": 120000,
+      "imageUrl": "/assets/zumba.jpg",
+      "duration": 45,
+      "instructor": "Lê Thị Zumba",
+      "maxStudents": 25,
+      "level": "All Levels",
+      "equipment": [
+        "Music system",
+        "Mirror"
+      ],
+      "schedule": {
+        "monday": [
+          "19:30"
+        ],
+        "wednesday": [
+          "19:30"
+        ],
+        "friday": [
+          "19:30"
+        ],
+        "sunday": [
+          "10:00"
+        ]
+      }
+    },
+    {
+      "id": 104,
+      "name": "Pilates Core",
+      "type": "Pilates",
+      "description": "Các lớp tập trung vào sự dẻo dai và thư giãn tinh thần.",
+      "price": 180000,
+      "imageUrl": "/assets/pilates.jpg",
+      "duration": 60,
+      "instructor": "Phạm Thị Pilates",
+      "maxStudents": 12,
+      "level": "Beginner",
+      "equipment": [
+        "Pilates mat",
+        "Resistance band"
+      ],
+      "schedule": {
+        "tuesday": [
+          "10:00",
+          "18:00"
+        ],
+        "thursday": [
+          "10:00",
+          "18:00"
+        ],
+        "saturday": [
+          "09:00"
+        ]
+      }
+    },
+    {
+      "id": 105,
+      "name": "CrossFit Challenge",
+      "type": "CrossFit",
+      "description": "Luyện tập cường độ cao với nhiều bài tập đa dạng.",
+      "price": 250000,
+      "imageUrl": "/assets/crossfit.jpg",
+      "duration": 60,
+      "instructor": "Hoàng Văn CrossFit",
+      "maxStudents": 10,
+      "level": "Advanced",
+      "equipment": [
+        "Kettlebell",
+        "Rowing machine",
+        "Pull-up bar"
+      ],
+      "schedule": {
+        "monday": [
+          "06:00",
+          "17:00"
+        ],
+        "wednesday": [
+          "06:00",
+          "17:00"
+        ],
+        "friday": [
+          "06:00",
+          "17:00"
+        ]
+      }
+    },
+    {
+      "name": "tét",
+      "type": "Gym",
+      "description": "Khóa học cung cấp về các bài tập",
+      "price": 29999,
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3tTtZXzaD1K63wsFyHvQ3KvXtCtQpF1VMsQ&s",
+      "duration": 60,
+      "instructor": "",
+      "maxStudents": 20,
+      "level": "Beginner",
+      "equipment": [],
+      "schedule": {},
+      "id": 106
+    }
+  ],
+  "bookings": [
+    {
+      "id": 501,
+      "userId": 2,
+      "courseId": 101,
+      "bookingDate": "2025-10-01",
+      "bookingTime": "09:00",
+      "status": "confirmed",
+      "createdAt": "2025-09-25T10:30:00Z",
+      "notes": "Lần đầu tập yoga"
+    },
+    {
+      "id": 502,
+      "userId": 2,
+      "courseId": 102,
+      "bookingDate": "2025-10-05",
+      "bookingTime": "19:30",
+      "status": "confirmed",
+      "createdAt": "2025-09-26T14:20:00Z",
+      "notes": "Muốn tập buổi tối"
+    },
+    {
+      "id": 503,
+      "userId": 3,
+      "courseId": 103,
+      "bookingDate": "2025-10-03",
+      "bookingTime": "19:30",
+      "status": "confirmed",
+      "createdAt": "2025-09-24T16:45:00Z",
+      "notes": "Yêu thích nhảy múa"
+    },
+    {
+      "id": 504,
+      "userId": 4,
+      "courseId": 104,
+      "bookingDate": "2025-10-07",
+      "bookingTime": "10:00",
+      "status": "cancelled",
+      "createdAt": "2025-09-27T09:15:00Z",
+      "notes": "Hủy do công việc"
+    },
+    {
+      "id": 505,
+      "userId": 2,
+      "courseId": 105,
+      "bookingDate": "2025-10-08",
+      "bookingTime": "06:00",
+      "status": "confirmed",
+      "createdAt": "2025-09-28T11:30:00Z",
+      "notes": "Thử thách bản thân"
+    },
+    {
+      "userId": 2,
+      "courseId": 105,
+      "bookingDate": "2025-10-03",
+      "bookingTime": "06:00",
+      "status": "pending",
+      "id": 506
+    },
+    {
+      "userId": 2,
+      "courseId": 102,
+      "bookingDate": "2025-10-03",
+      "bookingTime": "07:00",
+      "status": "pending",
+      "id": 507
+    },
+    {
+      "userId": 2,
+      "courseId": 106,
+      "bookingDate": "2025-10-03",
+      "bookingTime": "08:00",
+      "status": "pending",
+      "id": 508
+    }
+  ],
+  "services": [
+    {
+      "id": 101,
+      "name": "Gym & Thể Hình",
+      "description": "Các chương trình tăng cơ, giảm mỡ chuyên sâu.",
+      "icon": "icon-gym"
+    },
+    {
+      "id": 102,
+      "name": "Yoga & Thiền",
+      "description": "Các lớp tập trung vào sự dẻo dai và thư giãn tinh thần.",
+      "icon": "icon-yoga"
+    },
+    {
+      "id": 103,
+      "name": "Zumba & Nhảy",
+      "description": "Các lớp học cardio năng động theo điệu nhạc.",
+      "icon": "icon-zumba"
+    },
+    {
+      "id": 104,
+      "name": "Pilates & Core",
+      "description": "Tăng cường sức mạnh cơ bụng và cải thiện tư thế.",
+      "icon": "icon-pilates"
+    },
+    {
+      "id": 105,
+      "name": "CrossFit & HIIT",
+      "description": "Luyện tập cường độ cao với nhiều bài tập đa dạng.",
+      "icon": "icon-crossfit"
+    }
+  ]
+}

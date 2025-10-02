@@ -1,46 +1,180 @@
-# Getting Started with Create React App
+# Gym Booking App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Ứng dụng đặt lịch tập gym/yoga được xây dựng với React, TypeScript, Redux Toolkit và Tailwind CSS.
 
-## Available Scripts
+## Công nghệ sử dụng
 
-In the project directory, you can run:
+- **React 18** với TypeScript
+- **Redux Toolkit** với createAsyncThunk
+- **React Router v6** cho routing
+- **Axios** cho HTTP requests
+- **Tailwind CSS** cho styling
+- **React Hook Form** với Yup validation
+- **JSON Server** cho mock API
 
-### `npm start`
+## Cấu trúc dự án
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
+src/
+├── apis/                   # API functions với Axios
+├── assets/                 # Static files
+├── components/             # React components
+│   ├── common/            # Header, Footer, Spinner, ProtectedRoute
+│   ├── ui/                # CourseCard, CustomModal, Pagination
+│   └── forms/             # LoginForm, RegisterForm
+├── hooks/                 # Custom hooks
+├── pages/                 # Page components
+│   └── admin/             # Admin pages
+├── slices/                # Redux slices
+├── stores/                # Redux store configuration
+├── types/                 # TypeScript interfaces
+└── utils/                 # Utility functions
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Tính năng chính
 
-### `npm test`
+### Module Xác thực (Auth)
+- ✅ Đăng ký tài khoản với validation
+- ✅ Đăng nhập với phân quyền
+- ✅ Phân quyền User/Admin
+- ✅ Protected Routes
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Module Lớp học (Course)
+- ✅ Hiển thị danh sách lớp học
+- ✅ Sắp xếp theo tên, giá, loại
+- ✅ Tìm kiếm lớp học
+- ✅ Card layout responsive
 
-### `npm run build`
+### Module Đặt lịch (Booking - User)
+- ✅ Xem lịch đặt của user
+- ✅ Thêm/sửa/xóa lịch đặt
+- ✅ Validation không trùng lặp
+- ✅ Phân trang danh sách
+- ✅ Modal popup cho CRUD
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Module Quản lý (Admin)
+- ✅ Dashboard với thống kê
+- ✅ Quản lý người dùng (CRUD)
+- ✅ Quản lý lớp học (CRUD)
+- ✅ Quản lý lịch đặt với bộ lọc
+- ✅ Biểu đồ thống kê
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Cách chạy dự án
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 1. Cài đặt dependencies
+```bash
+npm install
+```
 
-### `npm run eject`
+### 2. Chạy JSON Server (Terminal 1)
+```bash
+npm run server
+```
+Server sẽ chạy tại: http://localhost:3001
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 3. Chạy React App (Terminal 2)
+```bash
+npm start
+```
+App sẽ chạy tại: http://localhost:3000
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Tài khoản demo
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Admin
+- Email: `admin@gym.com`
+- Password: `123`
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### User
+- Email: `user1@mail.com`
+- Password: `456`
 
-## Learn More
+## API Endpoints
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Users
+- `GET /users` - Lấy danh sách users
+- `GET /users/:id` - Lấy user theo ID
+- `POST /users` - Tạo user mới
+- `PATCH /users/:id` - Cập nhật user
+- `DELETE /users/:id` - Xóa user
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Courses
+- `GET /courses` - Lấy danh sách courses
+- `GET /courses/:id` - Lấy course theo ID
+- `POST /courses` - Tạo course mới
+- `PATCH /courses/:id` - Cập nhật course
+- `DELETE /courses/:id` - Xóa course
+
+### Bookings
+- `GET /bookings` - Lấy danh sách bookings
+- `GET /bookings?_expand=user&_expand=course` - Lấy bookings với thông tin chi tiết
+- `POST /bookings` - Tạo booking mới
+- `PATCH /bookings/:id` - Cập nhật booking
+- `DELETE /bookings/:id` - Xóa booking
+
+## Cấu trúc dữ liệu
+
+### User
+```typescript
+interface User {
+  id: number;
+  email: string;
+  password: string;
+  role: 'admin' | 'user';
+  fullName: string;
+}
+```
+
+### Course
+```typescript
+interface Course {
+  id: number;
+  name: string;
+  type: string;
+  price: number;
+  imageUrl: string;
+  description: string;
+  duration: number;
+}
+```
+
+### Booking
+```typescript
+interface Booking {
+  id: number;
+  userId: number;
+  courseId: number;
+  bookingDate: string;
+  bookingTime: string;
+  status: 'pending' | 'confirmed' | 'cancelled';
+}
+```
+
+## Redux Store Structure
+
+```typescript
+interface RootState {
+  auth: AuthState;
+  course: CourseState;
+  booking: BookingState;
+}
+```
+
+## Tính năng nổi bật
+
+1. **State Management**: Sử dụng Redux Toolkit với createAsyncThunk cho async operations
+2. **Type Safety**: TypeScript interfaces cho tất cả data structures
+3. **Form Validation**: React Hook Form với Yup schema validation
+4. **Responsive Design**: Tailwind CSS với mobile-first approach
+5. **Protected Routes**: Phân quyền dựa trên role
+6. **Error Handling**: Comprehensive error handling trong Redux slices
+7. **Loading States**: Loading indicators cho tất cả async operations
+8. **Modal System**: Reusable modal component
+9. **Pagination**: Custom pagination hook
+10. **Search & Filter**: Tìm kiếm và lọc dữ liệu
+
+## Scripts
+
+- `npm start` - Chạy development server
+- `npm run build` - Build production
+- `npm run server` - Chạy JSON Server
+- `npm test` - Chạy tests
