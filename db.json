@@ -31,22 +31,6 @@
       "fullName": "Lê Văn C",
       "role": "user",
       "phone": "0923456789"
-    },
-    {
-      "email": "nmhx@gmail.com",
-      "password": "",
-      "role": "user",
-      "fullName": "nmhx",
-      "id": 5,
-      "phone": "0357321983"
-    },
-    {
-      "email": "hung@gmail.com",
-      "password": "12345678",
-      "role": "user",
-      "fullName": "Nguyễn Mạnh Hùng",
-      "phone": "0987654321",
-      "id": 6
     }
   ],
   "courses": [

@@ -34,30 +34,30 @@ src/
 ## Tính năng chính
 
 ### Module Xác thực (Auth)
-- ✅ Đăng ký tài khoản với validation
-- ✅ Đăng nhập với phân quyền
-- ✅ Phân quyền User/Admin
-- ✅ Protected Routes
+-  Đăng ký tài khoản với validation
+-  Đăng nhập với phân quyền
+-  Phân quyền User/Admin
+-  Protected Routes
 
 ### Module Lớp học (Course)
-- ✅ Hiển thị danh sách lớp học
-- ✅ Sắp xếp theo tên, giá, loại
-- ✅ Tìm kiếm lớp học
-- ✅ Card layout responsive
+-  Hiển thị danh sách lớp học
+-  Sắp xếp theo tên, giá, loại
+-  Tìm kiếm lớp học
+-  Card layout responsive
 
 ### Module Đặt lịch (Booking - User)
-- ✅ Xem lịch đặt của user
-- ✅ Thêm/sửa/xóa lịch đặt
-- ✅ Validation không trùng lặp
-- ✅ Phân trang danh sách
-- ✅ Modal popup cho CRUD
+-  Xem lịch đặt của user
+-  Thêm/sửa/xóa lịch đặt
+-  Validation không trùng lặp
+-  Phân trang danh sách
+-  Modal popup cho CRUD
 
 ### Module Quản lý (Admin)
-- ✅ Dashboard với thống kê
-- ✅ Quản lý người dùng (CRUD)
-- ✅ Quản lý lớp học (CRUD)
-- ✅ Quản lý lịch đặt với bộ lọc
-- ✅ Biểu đồ thống kê
+-  Dashboard với thống kê
+-  Quản lý người dùng (CRUD)
+-  Quản lý lớp học (CRUD)
+-  Quản lý lịch đặt với bộ lọc
+-  Biểu đồ thống kê
 
 ## Cách chạy dự án
 

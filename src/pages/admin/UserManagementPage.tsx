@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { authApi } from '../../apis';
 import CustomModal from '../../components/ui/CustomModal';
+import ConfirmModal from '../../components/ui/ConfirmModal';
 import Spinner from '../../components/common/Spinner';
 import { User } from '../../types';
 
@@ -9,6 +10,8 @@ const UserManagementPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingUser, setEditingUser] = useState<User | null>(null);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [userToDelete, setUserToDelete] = useState<User | null>(null);
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -68,11 +71,17 @@ const UserManagementPage: React.FC = () => {
         setIsModalOpen(true);
     };
 
-    const handleDelete = async (id: number) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
+    const handleDelete = (user: User) => {
+        setUserToDelete(user);
+        setIsConfirmModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (userToDelete) {
             try {
-                await authApi.deleteUser(id);
+                await authApi.deleteUser(userToDelete.id);
                 fetchUsers();
+                setUserToDelete(null);
             } catch (error: any) {
                 alert(error.message || 'Có lỗi xảy ra');
             }
@@ -160,7 +169,7 @@ const UserManagementPage: React.FC = () => {
                                                 Sửa
                                             </button>
                                             <button
-                                                onClick={() => handleDelete(user.id)}
+                                                onClick={() => handleDelete(user)}
                                                 className="text-red-600 hover:text-red-900"
                                             >
                                                 Xóa
@@ -265,6 +274,18 @@ const UserManagementPage: React.FC = () => {
                     </div>
                 </form>
             </CustomModal>
+
+            {/* Confirm Delete Modal */}
+            <ConfirmModal
+                isOpen={isConfirmModalOpen}
+                onClose={() => setIsConfirmModalOpen(false)}
+                onConfirm={confirmDelete}
+                title="Xác nhận xóa người dùng"
+                message={`Bạn có chắc chắn muốn xóa người dùng "${userToDelete?.fullName}" (${userToDelete?.email})?`}
+                confirmText="Xóa"
+                cancelText="Hủy"
+                type="danger"
+            />
         </div>
     );
 };

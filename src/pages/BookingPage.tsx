@@ -5,6 +5,7 @@ import { fetchUserBookings, createBooking, updateBooking, deleteBooking } from '
 import { fetchCourses } from '../slices/courseSlice';
 import { usePagination } from '../hooks/usePagination';
 import CustomModal from '../components/ui/CustomModal';
+import ConfirmModal from '../components/ui/ConfirmModal';
 import Pagination from '../components/ui/Pagination';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
@@ -22,6 +23,8 @@ const BookingPage: React.FC = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [bookingToDelete, setBookingToDelete] = useState<Booking | null>(null);
     const [formData, setFormData] = useState({
         courseId: courseId ? parseInt(courseId) : 0,
         bookingDate: '',
@@ -84,9 +87,15 @@ const BookingPage: React.FC = () => {
         setIsModalOpen(true);
     };
 
-    const handleDelete = (id: number) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa lịch đặt này?')) {
-            dispatch(deleteBooking(id));
+    const handleDelete = (booking: Booking) => {
+        setBookingToDelete(booking);
+        setIsConfirmModalOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (bookingToDelete) {
+            dispatch(deleteBooking(bookingToDelete.id));
+            setBookingToDelete(null);
         }
     };
 
@@ -222,7 +231,7 @@ const BookingPage: React.FC = () => {
                                                             Sửa
                                                         </button>
                                                         <button
-                                                            onClick={() => handleDelete(booking.id)}
+                                                            onClick={() => handleDelete(booking)}
                                                             className="text-red-600 hover:text-red-900"
                                                         >
                                                             Xóa
@@ -337,6 +346,18 @@ const BookingPage: React.FC = () => {
                     </div>
                 </form>
             </CustomModal>
+
+            {/* Confirm Delete Modal */}
+            <ConfirmModal
+                isOpen={isConfirmModalOpen}
+                onClose={() => setIsConfirmModalOpen(false)}
+                onConfirm={confirmDelete}
+                title="Xác nhận xóa lịch đặt"
+                message={`Bạn có chắc chắn muốn xóa lịch đặt "${getCourseName(bookingToDelete?.courseId || 0)}" vào ngày ${bookingToDelete ? new Date(bookingToDelete.bookingDate).toLocaleDateString('vi-VN') : ''}?`}
+                confirmText="Xóa"
+                cancelText="Hủy"
+                type="danger"
+            />
 
             <Footer />
         </div>

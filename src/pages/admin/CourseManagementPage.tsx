@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../hooks';
 import { fetchCourses, createCourse, updateCourse, deleteCourse } from '../../slices/courseSlice';
 import CustomModal from '../../components/ui/CustomModal';
+import ConfirmModal from '../../components/ui/ConfirmModal';
 import Spinner from '../../components/common/Spinner';
 import { Course, CreateCourseRequest, UpdateCourseRequest } from '../../types';
 
@@ -11,6 +12,8 @@ const CourseManagementPage: React.FC = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
     const [formData, setFormData] = useState({
         name: '',
         type: '',
@@ -78,9 +81,15 @@ const CourseManagementPage: React.FC = () => {
         setIsModalOpen(true);
     };
 
-    const handleDelete = (id: number) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa lớp học này?')) {
-            dispatch(deleteCourse(id));
+    const handleDelete = (course: Course) => {
+        setCourseToDelete(course);
+        setIsConfirmModalOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (courseToDelete) {
+            dispatch(deleteCourse(courseToDelete.id));
+            setCourseToDelete(null);
         }
     };
 
@@ -189,7 +198,7 @@ const CourseManagementPage: React.FC = () => {
                                                 Sửa
                                             </button>
                                             <button
-                                                onClick={() => handleDelete(course.id)}
+                                                onClick={() => handleDelete(course)}
                                                 className="text-red-600 hover:text-red-900"
                                             >
                                                 Xóa
@@ -320,6 +329,18 @@ const CourseManagementPage: React.FC = () => {
                     </div>
                 </form>
             </CustomModal>
+
+            {/* Confirm Delete Modal */}
+            <ConfirmModal
+                isOpen={isConfirmModalOpen}
+                onClose={() => setIsConfirmModalOpen(false)}
+                onConfirm={confirmDelete}
+                title="Xác nhận xóa lớp học"
+                message={`Bạn có chắc chắn muốn xóa lớp học "${courseToDelete?.name}"?`}
+                confirmText="Xóa"
+                cancelText="Hủy"
+                type="danger"
+            />
         </div>
     );
 };

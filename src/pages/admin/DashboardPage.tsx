@@ -4,6 +4,7 @@ import { fetchAllBookings, fetchBookingStats } from '../../slices/bookingSlice';
 import { fetchCourses } from '../../slices/courseSlice';
 import { authApi } from '../../apis';
 import Spinner from '../../components/common/Spinner';
+import BookingStats from '../../components/charts/BookingStats';
 
 const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -98,77 +99,8 @@ const DashboardPage: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Booking Status Chart */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Trạng thái lịch đặt</h3>
-                        <div className="space-y-3">
-                            <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-600">Đã xác nhận</span>
-                                <div className="flex items-center">
-                                    <div className="w-32 bg-gray-200 rounded-full h-2 mr-2">
-                                        <div
-                                            className="bg-green-500 h-2 rounded-full"
-                                            style={{ width: `${totalBookings > 0 ? (confirmedBookings / totalBookings) * 100 : 0}%` }}
-                                        />
-                                    </div>
-                                    <span className="text-sm font-medium">{confirmedBookings}</span>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-600">Chờ xác nhận</span>
-                                <div className="flex items-center">
-                                    <div className="w-32 bg-gray-200 rounded-full h-2 mr-2">
-                                        <div
-                                            className="bg-yellow-500 h-2 rounded-full"
-                                            style={{ width: `${totalBookings > 0 ? (pendingBookings / totalBookings) * 100 : 0}%` }}
-                                        />
-                                    </div>
-                                    <span className="text-sm font-medium">{pendingBookings}</span>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-600">Đã hủy</span>
-                                <div className="flex items-center">
-                                    <div className="w-32 bg-gray-200 rounded-full h-2 mr-2">
-                                        <div
-                                            className="bg-red-500 h-2 rounded-full"
-                                            style={{ width: `${totalBookings > 0 ? (cancelledBookings / totalBookings) * 100 : 0}%` }}
-                                        />
-                                    </div>
-                                    <span className="text-sm font-medium">{cancelledBookings}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Course Popularity */}
-                    <div className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Lớp học phổ biến</h3>
-                        <div className="space-y-3">
-                            {stats && stats.length > 0 ? (
-                                stats.slice(0, 5).map((stat: any, index: number) => (
-                                    <div key={stat.courseId} className="flex justify-between items-center">
-                                        <span className="text-sm text-gray-600 truncate">{stat.courseName}</span>
-                                        <div className="flex items-center">
-                                            <div className="w-24 bg-gray-200 rounded-full h-2 mr-2">
-                                                <div
-                                                    className="bg-blue-500 h-2 rounded-full"
-                                                    style={{ width: `${(stat.count / Math.max(...stats.map((s: any) => s.count))) * 100}%` }}
-                                                />
-                                            </div>
-                                            <span className="text-sm font-medium">{stat.count}</span>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="text-gray-500 text-sm">Chưa có dữ liệu</p>
-                            )}
-                        </div>
-                    </div>
-                </div>
+                {/* Charts Section */}
+                <BookingStats bookings={bookings} courses={courses} />
 
                 {/* Recent Bookings */}
                 <div className="bg-white rounded-lg shadow">
