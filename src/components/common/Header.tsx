@@ -14,16 +14,16 @@ const Header: React.FC = () => {
     };
 
     return (
-        <header className="bg-blue-600 text-white shadow-lg">
+        <header className="bg-gray-800 text-white">
             <div className="container mx-auto px-4 py-3">
                 <div className="flex justify-between items-center">
-                    <Link to="/" className="text-2xl font-bold">
-                        Gym Booking
+                    <Link to="/" className="text-xl font-bold">
+                        GYM MANAGEMENT
                     </Link>
 
-                    <nav className="flex items-center space-x-6">
+                    <nav className="flex items-center space-x-4">
                         {/* Trang chủ - luôn hiển thị */}
-                        <Link to="/" className="hover:text-blue-200 transition-colors font-medium">
+                        <Link to="/" className="hover:text-gray-300 transition-colors">
                             Trang chủ
                         </Link>
 
@@ -31,26 +31,26 @@ const Header: React.FC = () => {
                             <>
                                 {/* Lịch đặt - chỉ hiện khi User đã đăng nhập */}
                                 {user?.role === 'user' && (
-                                    <Link to="/booking" className="hover:text-blue-200 transition-colors font-medium">
+                                    <Link to="/booking" className="hover:text-gray-300 transition-colors">
                                         Lịch đặt
                                     </Link>
                                 )}
 
                                 {/* Quản lý Admin - chỉ hiện khi Admin đã đăng nhập */}
                                 {user?.role === 'admin' && (
-                                    <Link to="/admin" className="hover:text-blue-200 transition-colors font-medium">
+                                    <Link to="/admin" className="hover:text-gray-300 transition-colors">
                                         Quản lý Admin
                                     </Link>
                                 )}
 
                                 {/* Thông tin user và đăng xuất */}
                                 <div className="flex items-center space-x-3">
-                                    <span className="text-sm bg-blue-500 px-3 py-1 rounded-full">
+                                    <span className="text-sm bg-gray-700 px-3 py-1 rounded">
                                         Xin chào, {user?.fullName}
                                     </span>
                                     <button
                                         onClick={handleLogout}
-                                        className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm transition-colors"
+                                        className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm transition-colors"
                                     >
                                         Đăng xuất
                                     </button>
@@ -59,10 +59,10 @@ const Header: React.FC = () => {
                         ) : (
                             <>
                                 {/* Đăng ký / Đăng nhập - chỉ hiện khi chưa đăng nhập */}
-                                <Link to="/register" className="hover:text-blue-200 transition-colors font-medium">
+                                <Link to="/register" className="hover:text-gray-300 transition-colors">
                                     Đăng ký
                                 </Link>
-                                <Link to="/login" className="hover:text-blue-200 transition-colors font-medium">
+                                <Link to="/login" className="hover:text-gray-300 transition-colors">
                                     Đăng nhập
                                 </Link>
                             </>

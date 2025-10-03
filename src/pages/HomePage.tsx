@@ -60,68 +60,59 @@ const HomePage: React.FC = () => {
 
             <main className="flex-1">
                 {/* Banner giới thiệu */}
-                <section className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white py-20 overflow-hidden">
-                    {/* Background Pattern */}
-                    <div className="absolute inset-0 bg-black opacity-20"></div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600/90 to-purple-600/90"></div>
+                <section className="relative h-[600px] md:h-[746px] overflow-hidden">
+                    {/* Background Image */}
+                    <div className="absolute inset-0">
+                        <img
+                            src="/assets/banner_home.png"
+                            alt="Gym Background"
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
 
-                    <div className="relative container mx-auto px-4 text-center">
-                        <div className="max-w-4xl mx-auto">
-                            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                                <span className="block text-white">Đặt lịch tập</span>
-                                <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
-                                    Gym/Yoga
-                                </span>
+                    {/* Dark Overlay */}
+                    <div className="absolute inset-0 bg-black opacity-50"></div>
+
+                    {/* Content */}
+                    <div className="relative h-full flex items-center justify-center">
+                        <div className="text-center text-white px-4">
+                            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                                Welcome to Our Gym
                             </h1>
-                            <p className="text-xl md:text-2xl mb-8 text-blue-100 leading-relaxed">
-                                Khám phá các lớp học thể dục phù hợp với bạn.
-                                <br />
-                                Từ Yoga thư giãn đến Gym cường độ cao, chúng tôi có tất cả!
+                            <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+                                Transform Your Body, Transform Your Life
                             </p>
 
                             {/* Call to Action */}
                             {!isLoggedIn ? (
-                                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                                    <a
-                                        href="/register"
-                                        className="bg-white text-blue-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg"
-                                    >
-                                        🚀 Đăng ký ngay
-                                    </a>
-                                    <a
-                                        href="/login"
-                                        className="border-2 border-white text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white hover:text-blue-600 transition-all transform hover:scale-105"
-                                    >
-                                        🔑 Đăng nhập
-                                    </a>
-                                </div>
+                                <a
+                                    href="/register"
+                                    className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
+                                >
+                                    Bắt đầu ngay
+                                </a>
                             ) : (
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                                     {user?.role === 'user' && (
                                         <a
                                             href="/booking"
-                                            className="bg-white text-blue-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg"
+                                            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
                                         >
-                                            📅 Xem lịch đã đặt
+                                            Bắt đầu ngay
                                         </a>
                                     )}
                                     {user?.role === 'admin' && (
                                         <a
                                             href="/admin"
-                                            className="bg-white text-blue-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg"
+                                            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
                                         >
-                                            ⚙️ Quản lý lịch
+                                            Bắt đầu ngay
                                         </a>
                                     )}
                                 </div>
                             )}
                         </div>
                     </div>
-
-                    {/* Decorative Elements */}
-                    <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-pulse"></div>
-                    <div className="absolute bottom-10 right-10 w-16 h-16 bg-white/10 rounded-full animate-pulse delay-1000"></div>
-                    <div className="absolute top-1/2 left-5 w-12 h-12 bg-white/10 rounded-full animate-pulse delay-500"></div>
                 </section>
 
                 {/* Courses Section */}
@@ -129,12 +120,12 @@ const HomePage: React.FC = () => {
                     <div className="container mx-auto px-4">
                         <div className="text-center mb-12">
                             <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                                🏋️‍♀️ Các lớp học phổ biến
+                                Các lớp học phổ biến
                             </h2>
-                            <p className="text-gray-600 max-w-2xl mx-auto">
+                            {/* <p className="text-gray-600 max-w-2xl mx-auto">
                                 Chọn lớp học phù hợp với sở thích và mục tiêu tập luyện của bạn.
                                 Danh sách được sắp xếp theo thứ tự bảng chữ cái.
-                            </p>
+                            </p> */}
                         </div>
 
                         {/* Search and Sort */}
@@ -193,7 +184,7 @@ const HomePage: React.FC = () => {
                 </section>
 
                 {/* Features Section */}
-                <section className="py-16 bg-white">
+                {/* <section className="py-16 bg-white">
                     <div className="container mx-auto px-4">
                         <div className="text-center mb-12">
                             <h2 className="text-3xl font-bold text-gray-800 mb-4">
@@ -233,7 +224,7 @@ const HomePage: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> */}
             </main>
 
             <Footer />
