@@ -2,7 +2,7 @@
   "users": [
     {
       "id": 1,
-      "email": "admin@gym.com",
+      "email": "admin@gmail.com",
       "password": "adminpassword",
       "fullName": "Quản Trị Viên",
       "role": "admin",
@@ -10,7 +10,7 @@
     },
     {
       "id": 2,
-      "email": "user1@mail.com",
+      "email": "user1@gmail.com",
       "password": "userpassword",
       "fullName": "Nguyễn Văn A",
       "role": "user",
@@ -18,7 +18,7 @@
     },
     {
       "id": 3,
-      "email": "user2@mail.com",
+      "email": "user2@gmail.com",
       "password": "userpassword2",
       "fullName": "Trần Thị B",
       "role": "user",
@@ -26,7 +26,7 @@
     },
     {
       "id": 4,
-      "email": "user3@mail.com",
+      "email": "user3@gmail.com",
       "password": "userpassword3",
       "fullName": "Lê Văn C",
       "role": "user",

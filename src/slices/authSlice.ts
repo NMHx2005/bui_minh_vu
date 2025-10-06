@@ -61,6 +61,7 @@ const initialState: AuthState = {
     isLoggedIn: false,
     isLoading: false,
     error: null,
+    successMessage: null,
 };
 
 // Auth slice
@@ -70,6 +71,9 @@ const authSlice = createSlice({
     reducers: {
         clearError: (state) => {
             state.error = null;
+        },
+        clearSuccessMessage: (state) => {
+            state.successMessage = null;
         },
     },
     extraReducers: (builder) => {
@@ -84,6 +88,7 @@ const authSlice = createSlice({
                 state.user = action.payload;
                 state.isLoggedIn = true;
                 state.error = null;
+                state.successMessage = 'Đăng nhập thành công!';
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.isLoading = false;
@@ -101,6 +106,7 @@ const authSlice = createSlice({
                 state.user = action.payload;
                 state.isLoggedIn = true;
                 state.error = null;
+                state.successMessage = 'Đăng ký thành công!';
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.isLoading = false;
@@ -117,6 +123,7 @@ const authSlice = createSlice({
                 state.user = action.payload;
                 state.isLoggedIn = true;
                 state.error = null;
+                state.successMessage = null; // Clear success message khi load từ storage
             })
             .addCase(loadUserFromStorage.rejected, (state) => {
                 state.isLoading = false;
@@ -128,9 +135,10 @@ const authSlice = createSlice({
                 state.user = null;
                 state.isLoggedIn = false;
                 state.error = null;
+                state.successMessage = null; // Clear success message khi logout
             });
     },
 });
 
-export const { clearError } = authSlice.actions;
+export const { clearError, clearSuccessMessage } = authSlice.actions;
 export default authSlice.reducer;

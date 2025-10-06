@@ -18,12 +18,17 @@ const LoginPage: React.FC = () => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            const from = (location.state as any)?.from?.pathname || '/';
-            if (user?.role === 'admin') {
-                navigate('/admin');
-            } else {
-                navigate(from);
-            }
+            // Delay redirect để notification kịp hiển thị
+            const timer = setTimeout(() => {
+                const from = (location.state as any)?.from?.pathname || '/';
+                if (user?.role === 'admin') {
+                    navigate('/admin');
+                } else {
+                    navigate(from);
+                }
+            }, 2000); // 2 giây delay
+
+            return () => clearTimeout(timer);
         }
     }, [isLoggedIn, user, navigate, location]);
 
@@ -32,33 +37,25 @@ const LoginPage: React.FC = () => {
             <Header />
 
             <main className="flex-1 flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-md w-full space-y-8">
-                    <div>
-                        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                            Đăng nhập vào tài khoản
+                <div className="w-full max-w-md">
+                    {/* Login Card */}
+                    <div className="bg-white rounded-lg shadow-lg p-8">
+                        <h2 className="text-2xl font-bold text-black text-center mb-8">
+                            Đăng nhập
                         </h2>
-                        <p className="mt-2 text-center text-sm text-gray-600">
-                            Hoặc{' '}
-                            <Link
-                                to="/register"
-                                className="font-medium text-blue-600 hover:text-blue-500"
-                            >
-                                tạo tài khoản mới
-                            </Link>
-                        </p>
-                    </div>
 
-                    <div className="bg-white py-8 px-6 shadow rounded-lg">
                         <LoginForm />
-                    </div>
 
-                    <div className="text-center">
-                        <p className="text-sm text-gray-600">
-                            Tài khoản demo:
-                        </p>
-                        <div className="mt-2 text-xs text-gray-500 space-y-1">
-                            <p><strong>Admin:</strong> admin@gym.com / 123</p>
-                            <p><strong>User:</strong> user1@mail.com / 456</p>
+                        <div className="text-center mt-6">
+                            <p className="text-sm text-gray-600">
+                                Chưa có tài khoản?{' '}
+                                <Link
+                                    to="/register"
+                                    className="text-blue-600 hover:text-blue-500 font-medium"
+                                >
+                                    Đăng ký ngay
+                                </Link>
+                            </p>
                         </div>
                     </div>
                 </div>

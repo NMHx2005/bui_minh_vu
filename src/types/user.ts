@@ -4,7 +4,7 @@ export interface User {
     password: string;
     fullName: string;
     role: 'admin' | 'user';
-    phone: string;
+    phone?: string;
 }
 
 export interface LoginRequest {
@@ -17,7 +17,6 @@ export interface RegisterRequest {
     password: string;
     confirmPassword: string;
     fullName: string;
-    phone: string;
 }
 
 export interface AuthState {
@@ -25,4 +24,5 @@ export interface AuthState {
     isLoggedIn: boolean;
     isLoading: boolean;
     error: string | null;
+    successMessage: string | null;
 }

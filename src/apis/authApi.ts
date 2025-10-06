@@ -33,7 +33,7 @@ export const authApi = {
             password: userData.password,
             role: 'user' as const,
             fullName: userData.fullName,
-            phone: userData.phone,
+            phone: '', // Default empty phone
         };
 
         const response = await axiosClient.post('/users', newUser);

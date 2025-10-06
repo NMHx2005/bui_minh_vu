@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../hooks';
-import { logoutUser } from '../../slices/authSlice';
+import { logoutUser, clearSuccessMessage } from '../../slices/authSlice';
 
 const Header: React.FC = () => {
     const { user, isLoggedIn } = useAppSelector((state) => state.auth);
@@ -9,6 +9,7 @@ const Header: React.FC = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
+        dispatch(clearSuccessMessage()); // Clear success message trước khi logout
         dispatch(logoutUser());
         navigate('/');
     };
