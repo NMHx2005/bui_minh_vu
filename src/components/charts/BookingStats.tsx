@@ -1,4 +1,5 @@
 import React from 'react';
+import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -7,95 +8,106 @@ import {
     Title,
     Tooltip,
     Legend,
-    ArcElement,
 } from 'chart.js';
-import { Bar, Pie } from 'react-chartjs-2';
 
+// Register Chart.js components
 ChartJS.register(
     CategoryScale,
     LinearScale,
     BarElement,
     Title,
     Tooltip,
-    Legend,
-    ArcElement
+    Legend
 );
-
-interface ChartData {
-    labels: string[];
-    datasets: {
-        label: string;
-        data: number[];
-        backgroundColor: string[];
-        borderColor?: string[];
-        borderWidth?: number;
-    }[];
-}
 
 interface BookingStatsProps {
     bookings: any[];
     courses: any[];
 }
 
+interface CourseStats {
+    courseId: number;
+    courseName: string;
+    totalBookings: number;
+    confirmedBookings: number;
+    pendingBookings: number;
+    cancelledBookings: number;
+}
+
 const BookingStats: React.FC<BookingStatsProps> = ({ bookings, courses }) => {
-    // Tính toán dữ liệu cho biểu đồ trạng thái
-    const statusData = {
-        labels: ['Đã xác nhận', 'Chờ xác nhận', 'Đã hủy'],
+    // Tính toán thống kê cho từng lớp học
+    const calculateStats = (): CourseStats[] => {
+        const courseStatsMap = new Map<number, CourseStats>();
+
+        // Khởi tạo stats cho tất cả courses
+        courses.forEach(course => {
+            courseStatsMap.set(course.id, {
+                courseId: course.id,
+                courseName: course.name,
+                totalBookings: 0,
+                confirmedBookings: 0,
+                pendingBookings: 0,
+                cancelledBookings: 0,
+            });
+        });
+
+        // Đếm bookings theo course và status
+        bookings.forEach(booking => {
+            const courseId = booking.courseId;
+            const status = booking.status;
+
+            if (courseStatsMap.has(courseId)) {
+                const stats = courseStatsMap.get(courseId)!;
+                stats.totalBookings++;
+
+                switch (status) {
+                    case 'confirmed':
+                        stats.confirmedBookings++;
+                        break;
+                    case 'pending':
+                        stats.pendingBookings++;
+                        break;
+                    case 'cancelled':
+                        stats.cancelledBookings++;
+                        break;
+                }
+            }
+        });
+
+        return Array.from(courseStatsMap.values()).sort((a, b) => b.totalBookings - a.totalBookings);
+    };
+
+    const stats = calculateStats();
+
+    // Chuẩn bị dữ liệu cho biểu đồ
+    const chartData = {
+        labels: stats.map(stat => stat.courseName),
         datasets: [
             {
-                label: 'Số lượng lịch đặt',
-                data: [
-                    bookings.filter(b => b.status === 'confirmed').length,
-                    bookings.filter(b => b.status === 'pending').length,
-                    bookings.filter(b => b.status === 'cancelled').length,
-                ],
-                backgroundColor: [
-                    'rgba(34, 197, 94, 0.8)',  // Green
-                    'rgba(251, 191, 36, 0.8)',  // Yellow
-                    'rgba(239, 68, 68, 0.8)',   // Red
-                ],
-                borderColor: [
-                    'rgba(34, 197, 94, 1)',
-                    'rgba(251, 191, 36, 1)',
-                    'rgba(239, 68, 68, 1)',
-                ],
-                borderWidth: 2,
+                label: 'Đã xác nhận',
+                data: stats.map(stat => stat.confirmedBookings),
+                backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                borderColor: 'rgba(34, 197, 94, 1)',
+                borderWidth: 1,
+            },
+            {
+                label: 'Chờ xác nhận',
+                data: stats.map(stat => stat.pendingBookings),
+                backgroundColor: 'rgba(251, 191, 36, 0.8)',
+                borderColor: 'rgba(251, 191, 36, 1)',
+                borderWidth: 1,
+            },
+            {
+                label: 'Đã hủy',
+                data: stats.map(stat => stat.cancelledBookings),
+                backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                borderColor: 'rgba(239, 68, 68, 1)',
+                borderWidth: 1,
             },
         ],
     };
 
-    // Tính toán dữ liệu cho biểu đồ lớp học phổ biến
-    const courseStats = courses.map(course => ({
-        name: course.name,
-        count: bookings.filter(b => b.courseId === course.id).length,
-    })).sort((a, b) => b.count - a.count).slice(0, 5);
-
-    const courseData = {
-        labels: courseStats.map(c => c.name),
-        datasets: [
-            {
-                label: 'Số lượng đặt lịch',
-                data: courseStats.map(c => c.count),
-                backgroundColor: [
-                    'rgba(59, 130, 246, 0.8)',  // Blue
-                    'rgba(16, 185, 129, 0.8)',  // Emerald
-                    'rgba(245, 158, 11, 0.8)',  // Amber
-                    'rgba(139, 92, 246, 0.8)',  // Violet
-                    'rgba(236, 72, 153, 0.8)',  // Pink
-                ],
-                borderColor: [
-                    'rgba(59, 130, 246, 1)',
-                    'rgba(16, 185, 129, 1)',
-                    'rgba(245, 158, 11, 1)',
-                    'rgba(139, 92, 246, 1)',
-                    'rgba(236, 72, 153, 1)',
-                ],
-                borderWidth: 2,
-            },
-        ],
-    };
-
-    const statusOptions = {
+    const chartOptions = {
         responsive: true,
         plugins: {
             legend: {
@@ -103,11 +115,7 @@ const BookingStats: React.FC<BookingStatsProps> = ({ bookings, courses }) => {
             },
             title: {
                 display: true,
-                text: 'Thống kê trạng thái lịch đặt',
-                font: {
-                    size: 16,
-                    weight: 'bold' as const,
-                },
+                text: 'Thống kê đăng ký theo lớp học',
             },
         },
         scales: {
@@ -115,92 +123,45 @@ const BookingStats: React.FC<BookingStatsProps> = ({ bookings, courses }) => {
                 beginAtZero: true,
                 ticks: {
                     stepSize: 1,
-                },
-            },
-        },
-    };
-
-    const courseOptions = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top' as const,
-            },
-            title: {
-                display: true,
-                text: 'Top 5 lớp học phổ biến',
-                font: {
-                    size: 16,
-                    weight: 'bold' as const,
-                },
-            },
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 1,
-                },
-            },
-        },
-    };
-
-    const pieOptions = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'bottom' as const,
-            },
-            title: {
-                display: true,
-                text: 'Phân bố trạng thái lịch đặt',
-                font: {
-                    size: 16,
-                    weight: 'bold' as const,
                 },
             },
         },
     };
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Biểu đồ cột - Trạng thái */}
-            <div className="bg-white p-6 rounded-lg shadow">
-                <Bar data={statusData} options={statusOptions} />
-            </div>
-
-            {/* Biểu đồ cột - Lớp học phổ biến */}
-            <div className="bg-white p-6 rounded-lg shadow">
-                <Bar data={courseData} options={courseOptions} />
-            </div>
-
-            {/* Biểu đồ tròn - Phân bố trạng thái */}
-            <div className="bg-white p-6 rounded-lg shadow">
-                <Pie data={statusData} options={pieOptions} />
-            </div>
-
+        <div className="space-y-6">
             {/* Thống kê tổng quan */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {stats.slice(0, 4).map((stat) => (
+                    <div key={stat.courseId} className="bg-white p-4 rounded-lg shadow border">
+                        <h3 className="text-sm font-medium text-gray-500 mb-2">{stat.courseName}</h3>
+                        <div className="space-y-1">
+                            <div className="flex justify-between text-sm">
+                                <span className="text-gray-600">Tổng đăng ký:</span>
+                                <span className="font-semibold text-gray-900">{stat.totalBookings}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span className="text-green-600">Đã xác nhận:</span>
+                                <span className="font-semibold text-green-600">{stat.confirmedBookings}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span className="text-yellow-600">Chờ xác nhận:</span>
+                                <span className="font-semibold text-yellow-600">{stat.pendingBookings}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span className="text-red-600">Đã hủy:</span>
+                                <span className="font-semibold text-red-600">{stat.cancelledBookings}</span>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Biểu đồ cột */}
             <div className="bg-white p-6 rounded-lg shadow">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Tổng quan</h3>
-                <div className="space-y-3">
-                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <span className="text-sm font-medium text-gray-600">Tổng lịch đặt:</span>
-                        <span className="text-lg font-bold text-blue-600">{bookings.length}</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <span className="text-sm font-medium text-gray-600">Tỷ lệ xác nhận:</span>
-                        <span className="text-lg font-bold text-green-600">
-                            {bookings.length > 0
-                                ? Math.round((bookings.filter(b => b.status === 'confirmed').length / bookings.length) * 100)
-                                : 0}%
-                        </span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <span className="text-sm font-medium text-gray-600">Lớp học phổ biến nhất:</span>
-                        <span className="text-sm font-bold text-purple-600">
-                            {courseStats.length > 0 ? courseStats[0].name : 'Chưa có dữ liệu'}
-                        </span>
-                    </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Biểu đồ thống kê đăng ký</h3>
+                <div className="h-96">
+                    <Bar data={chartData} options={chartOptions} />
                 </div>
             </div>
         </div>

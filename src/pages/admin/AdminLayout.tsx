@@ -43,7 +43,6 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                                     className={`flex items-center px-4 py-2 rounded-lg transition-colors ${isActive('/admin') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
                                         }`}
                                 >
-                                    <span className="mr-3">📊</span>
                                     Dashboard
                                 </Link>
                             </li>
@@ -53,7 +52,6 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                                     className={`flex items-center px-4 py-2 rounded-lg transition-colors ${isActive('/admin/users') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
                                         }`}
                                 >
-                                    <span className="mr-3">👥</span>
                                     Quản lý người dùng
                                 </Link>
                             </li>
@@ -63,7 +61,6 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                                     className={`flex items-center px-4 py-2 rounded-lg transition-colors ${isActive('/admin/courses') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
                                         }`}
                                 >
-                                    <span className="mr-3">🏋️</span>
                                     Quản lý lớp học
                                 </Link>
                             </li>
@@ -73,7 +70,6 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                                     className={`flex items-center px-4 py-2 rounded-lg transition-colors ${isActive('/admin/bookings') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
                                         }`}
                                 >
-                                    <span className="mr-3">📅</span>
                                     Quản lý lịch đặt
                                 </Link>
                             </li>

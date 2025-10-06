@@ -52,9 +52,6 @@ const DashboardPage: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className="bg-white p-6 rounded-lg shadow">
                         <div className="flex items-center">
-                            <div className="p-2 bg-blue-100 rounded-lg">
-                                <span className="text-2xl">👥</span>
-                            </div>
                             <div className="ml-4">
                                 <p className="text-sm font-medium text-gray-600">Tổng người dùng</p>
                                 <p className="text-2xl font-bold text-gray-900">{userCount}</p>
@@ -64,9 +61,6 @@ const DashboardPage: React.FC = () => {
 
                     <div className="bg-white p-6 rounded-lg shadow">
                         <div className="flex items-center">
-                            <div className="p-2 bg-green-100 rounded-lg">
-                                <span className="text-2xl">🏋️</span>
-                            </div>
                             <div className="ml-4">
                                 <p className="text-sm font-medium text-gray-600">Tổng lớp học</p>
                                 <p className="text-2xl font-bold text-gray-900">{courses.length}</p>
@@ -76,9 +70,6 @@ const DashboardPage: React.FC = () => {
 
                     <div className="bg-white p-6 rounded-lg shadow">
                         <div className="flex items-center">
-                            <div className="p-2 bg-purple-100 rounded-lg">
-                                <span className="text-2xl">📅</span>
-                            </div>
                             <div className="ml-4">
                                 <p className="text-sm font-medium text-gray-600">Tổng lịch đặt</p>
                                 <p className="text-2xl font-bold text-gray-900">{totalBookings}</p>
@@ -88,9 +79,6 @@ const DashboardPage: React.FC = () => {
 
                     <div className="bg-white p-6 rounded-lg shadow">
                         <div className="flex items-center">
-                            <div className="p-2 bg-yellow-100 rounded-lg">
-                                <span className="text-2xl">✅</span>
-                            </div>
                             <div className="ml-4">
                                 <p className="text-sm font-medium text-gray-600">Đã xác nhận</p>
                                 <p className="text-2xl font-bold text-gray-900">{confirmedBookings}</p>

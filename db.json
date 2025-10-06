@@ -256,7 +256,7 @@
       "courseId": 105,
       "bookingDate": "2025-10-03",
       "bookingTime": "06:00",
-      "status": "pending",
+      "status": "confirmed",
       "id": 506
     },
     {

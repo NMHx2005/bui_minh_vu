@@ -4,6 +4,7 @@ import { fetchAllBookings, filterBookings, updateBooking } from '../../slices/bo
 import { fetchCourses } from '../../slices/courseSlice';
 import CustomModal from '../../components/ui/CustomModal';
 import Spinner from '../../components/common/Spinner';
+import BookingStats from '../../components/charts/BookingStats';
 import { BookingWithDetails, UpdateBookingRequest, BookingFilters } from '../../types';
 
 const BookingManagementPage: React.FC = () => {
@@ -98,6 +99,9 @@ const BookingManagementPage: React.FC = () => {
                 <div className="flex justify-between items-center">
                     <h2 className="text-3xl font-bold text-gray-800">Quản lý lịch đặt</h2>
                 </div>
+
+                {/* Thống kê và biểu đồ */}
+                <BookingStats bookings={bookings} courses={courses} />
 
                 {/* Filters */}
                 <div className="bg-white p-6 rounded-lg shadow">

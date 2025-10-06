@@ -27,28 +27,24 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         switch (type) {
             case 'danger':
                 return {
-                    icon: '🗑️',
                     confirmButton: 'bg-red-600 hover:bg-red-700 text-white',
                     iconBg: 'bg-red-100',
                     iconText: 'text-red-600'
                 };
             case 'warning':
                 return {
-                    icon: '⚠️',
                     confirmButton: 'bg-yellow-600 hover:bg-yellow-700 text-white',
                     iconBg: 'bg-yellow-100',
                     iconText: 'text-yellow-600'
                 };
             case 'info':
                 return {
-                    icon: 'ℹ️',
                     confirmButton: 'bg-blue-600 hover:bg-blue-700 text-white',
                     iconBg: 'bg-blue-100',
                     iconText: 'text-blue-600'
                 };
             default:
                 return {
-                    icon: '🗑️',
                     confirmButton: 'bg-red-600 hover:bg-red-700 text-white',
                     iconBg: 'bg-red-100',
                     iconText: 'text-red-600'
@@ -68,9 +64,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all">
                 {/* Header */}
                 <div className="flex items-center p-6 border-b border-gray-200">
-                    <div className={`flex-shrink-0 w-10 h-10 rounded-full ${styles.iconBg} flex items-center justify-center mr-4`}>
-                        <span className={`text-xl ${styles.iconText}`}>{styles.icon}</span>
-                    </div>
                     <div className="flex-1">
                         <h3 className="text-lg font-semibold text-gray-900">
                             {title}
