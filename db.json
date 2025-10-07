@@ -209,7 +209,20 @@
       "bookingTime": "09:00",
       "status": "confirmed",
       "createdAt": "2025-09-25T10:30:00Z",
-      "notes": "Lần đầu tập yoga"
+      "notes": "Lần đầu tập yoga",
+      "user": {
+        "id": 2,
+        "email": "user1@gmail.com",
+        "fullName": "Nguyễn Văn A",
+        "role": "user",
+        "phone": "0987654321"
+      },
+      "course": {
+        "id": 101,
+        "name": "Yoga Giảm Cân",
+        "type": "Yoga",
+        "price": 150000
+      }
     },
     {
       "id": 502,
@@ -219,7 +232,20 @@
       "bookingTime": "19:30",
       "status": "confirmed",
       "createdAt": "2025-09-26T14:20:00Z",
-      "notes": "Muốn tập buổi tối"
+      "notes": "Muốn tập buổi tối",
+      "user": {
+        "id": 2,
+        "email": "user1@gmail.com",
+        "fullName": "Nguyễn Văn A",
+        "role": "user",
+        "phone": "0987654321"
+      },
+      "course": {
+        "id": 102,
+        "name": "Gym Cường Độ Cao",
+        "type": "Gym",
+        "price": 200000
+      }
     },
     {
       "id": 503,
@@ -229,7 +255,20 @@
       "bookingTime": "19:30",
       "status": "confirmed",
       "createdAt": "2025-09-24T16:45:00Z",
-      "notes": "Yêu thích nhảy múa"
+      "notes": "Yêu thích nhảy múa",
+      "user": {
+        "id": 3,
+        "email": "user2@gmail.com",
+        "fullName": "Trần Thị B",
+        "role": "user",
+        "phone": "0912345678"
+      },
+      "course": {
+        "id": 103,
+        "name": "Zumba Dance",
+        "type": "Dance",
+        "price": 120000
+      }
     },
     {
       "id": 504,
@@ -239,7 +278,20 @@
       "bookingTime": "10:00",
       "status": "cancelled",
       "createdAt": "2025-09-27T09:15:00Z",
-      "notes": "Hủy do công việc"
+      "notes": "Hủy do công việc",
+      "user": {
+        "id": 4,
+        "email": "user3@gmail.com",
+        "fullName": "Lê Văn C",
+        "role": "user",
+        "phone": "0923456789"
+      },
+      "course": {
+        "id": 104,
+        "name": "Pilates Core",
+        "type": "Pilates",
+        "price": 180000
+      }
     },
     {
       "id": 505,
@@ -249,31 +301,91 @@
       "bookingTime": "06:00",
       "status": "confirmed",
       "createdAt": "2025-09-28T11:30:00Z",
-      "notes": "Thử thách bản thân"
+      "notes": "Thử thách bản thân",
+      "user": {
+        "id": 2,
+        "email": "user1@gmail.com",
+        "fullName": "Nguyễn Văn A",
+        "role": "user",
+        "phone": "0987654321"
+      },
+      "course": {
+        "id": 105,
+        "name": "CrossFit Challenge",
+        "type": "CrossFit",
+        "price": 250000
+      }
     },
     {
+      "id": 506,
       "userId": 2,
       "courseId": 105,
       "bookingDate": "2025-10-03",
       "bookingTime": "06:00",
       "status": "confirmed",
-      "id": 506
+      "user": {
+        "id": 2,
+        "email": "user1@gmail.com",
+        "fullName": "Nguyễn Văn A",
+        "role": "user",
+        "phone": "0987654321"
+      },
+      "course": {
+        "id": 105,
+        "name": "CrossFit Challenge",
+        "type": "CrossFit",
+        "price": 250000
+      }
     },
     {
+      "id": 507,
       "userId": 2,
       "courseId": 102,
       "bookingDate": "2025-10-03",
       "bookingTime": "07:00",
       "status": "pending",
-      "id": 507
+      "user": {
+        "id": 2,
+        "email": "user1@gmail.com",
+        "fullName": "Nguyễn Văn A",
+        "role": "user",
+        "phone": "0987654321"
+      },
+      "course": {
+        "id": 102,
+        "name": "Gym Cường Độ Cao",
+        "type": "Gym",
+        "price": 200000
+      }
     },
     {
+      "id": 508,
       "userId": 2,
       "courseId": 106,
       "bookingDate": "2025-10-03",
       "bookingTime": "08:00",
       "status": "pending",
-      "id": 508
+      "user": {
+        "id": 2,
+        "email": "user1@gmail.com",
+        "fullName": "Nguyễn Văn A",
+        "role": "user",
+        "phone": "0987654321"
+      },
+      "course": {
+        "id": 106,
+        "name": "tét",
+        "type": "Gym",
+        "price": 29999
+      }
+    },
+    {
+      "userId": 2,
+      "courseId": 105,
+      "bookingDate": "2025-10-23",
+      "bookingTime": "07:00",
+      "status": "confirmed",
+      "id": 509
     }
   ],
   "services": [

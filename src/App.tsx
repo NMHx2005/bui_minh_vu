@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { store } from './stores';
 import { useAppDispatch, useAppSelector } from './hooks';
 import { loadUserFromStorage } from './slices/authSlice';
+import Spinner from './components/common/Spinner';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -23,11 +24,24 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 
 const AppContent: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { isLoggedIn, user } = useAppSelector((state) => state.auth);
+  const { isLoggedIn, user, isLoading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
+    // Chỉ load user từ storage một lần khi app khởi động
     dispatch(loadUserFromStorage());
-  }, [dispatch]);
+  }, []); // Empty dependency array để chỉ chạy một lần
+
+  // Hiển thị loading khi đang load user từ storage lần đầu
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <Spinner size="lg" />
+          <p className="mt-4 text-gray-600">Đang tải...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Router>

@@ -59,7 +59,7 @@ export const logoutUser = createAsyncThunk(
 const initialState: AuthState = {
     user: null,
     isLoggedIn: false,
-    isLoading: false,
+    isLoading: true, // Bắt đầu với isLoading = true
     error: null,
     successMessage: null,
 };
@@ -129,6 +129,7 @@ const authSlice = createSlice({
                 state.isLoading = false;
                 state.user = null;
                 state.isLoggedIn = false;
+                state.error = null; // Clear error khi không tìm thấy user trong storage
             })
             // Logout
             .addCase(logoutUser.fulfilled, (state) => {
