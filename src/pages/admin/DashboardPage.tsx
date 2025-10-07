@@ -28,7 +28,7 @@ const DashboardPage: React.FC = () => {
                 setStats(result.payload);
             }
         });
-    }, [dispatch]);
+    }, []); // Empty dependency array để chỉ chạy một lần
 
     const totalBookings = bookings.length;
     const confirmedBookings = bookings.filter(b => b.status === 'confirmed').length;

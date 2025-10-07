@@ -22,7 +22,6 @@ const schema = yup.object({
     email: yup
         .string()
         .email('Email không hợp lệ')
-        .matches(/@gmail\.com$/, 'Email phải có domain @gmail.com')
         .required('Email là bắt buộc'),
     password: yup
         .string()
@@ -56,7 +55,6 @@ const RegisterForm: React.FC = () => {
     useEffect(() => {
         if (successMessage) {
             setShowNotification(true);
-            console.log('Success message received:', successMessage); // Debug log
         }
     }, [successMessage]);
 

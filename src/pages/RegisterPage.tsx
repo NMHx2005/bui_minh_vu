@@ -12,9 +12,7 @@ const RegisterPage: React.FC = () => {
     const location = useLocation();
     const { isLoggedIn, user } = useAppSelector((state) => state.auth);
 
-    useEffect(() => {
-        dispatch(loadUserFromStorage());
-    }, [dispatch]);
+    // Không cần gọi loadUserFromStorage ở đây vì đã được gọi trong App.tsx
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -26,7 +24,7 @@ const RegisterPage: React.FC = () => {
                 } else {
                     navigate(from);
                 }
-            }, 2000); // 2 giây delay
+            }, 1000); // Giảm delay xuống 1 giây
 
             return () => clearTimeout(timer);
         }

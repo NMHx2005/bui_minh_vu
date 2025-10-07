@@ -46,7 +46,6 @@ const LoginForm: React.FC = () => {
     useEffect(() => {
         if (successMessage) {
             setShowNotification(true);
-            console.log('Success message received:', successMessage); // Debug log
         }
     }, [successMessage]);
 
