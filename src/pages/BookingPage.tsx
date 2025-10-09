@@ -30,6 +30,11 @@ const BookingPage: React.FC = () => {
         bookingDate: '',
         bookingTime: '',
     });
+    const [validationErrors, setValidationErrors] = useState<{
+        courseId?: string;
+        bookingDate?: string;
+        bookingTime?: string;
+    }>({});
 
     const { currentData, currentPage, totalPages, goToPage } = usePagination({
         data: userBookings,
@@ -49,10 +54,82 @@ const BookingPage: React.FC = () => {
         }
     }, [courseId]);
 
+    // Hàm validate form
+    const validateForm = (): boolean => {
+        const errors: {
+            courseId?: string;
+            bookingDate?: string;
+            bookingTime?: string;
+        } = {};
+
+        // Validate courseId
+        if (!formData.courseId || formData.courseId === 0) {
+            errors.courseId = 'Vui lòng chọn lớp học';
+        } else {
+            // Kiểm tra course có tồn tại trong danh sách không
+            const courseExists = courses.find(c => c.id === formData.courseId);
+            if (!courseExists) {
+                errors.courseId = 'Lớp học không hợp lệ';
+            }
+        }
+
+        // Validate bookingDate
+        if (!formData.bookingDate || formData.bookingDate.trim() === '') {
+            errors.bookingDate = 'Vui lòng chọn ngày đặt lịch';
+        } else {
+            // Kiểm tra format ngày
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!dateRegex.test(formData.bookingDate)) {
+                errors.bookingDate = 'Định dạng ngày không hợp lệ';
+            } else {
+                // Kiểm tra ngày phải >= ngày hiện tại
+                const selectedDate = new Date(formData.bookingDate);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (selectedDate < today) {
+                    errors.bookingDate = 'Ngày đặt lịch phải từ hôm nay trở đi';
+                }
+
+                // Kiểm tra ngày có hợp lệ không (ví dụ: không phải 2024-13-45)
+                if (isNaN(selectedDate.getTime())) {
+                    errors.bookingDate = 'Ngày không hợp lệ';
+                }
+            }
+        }
+
+        // Validate bookingTime
+        if (!formData.bookingTime || formData.bookingTime.trim() === '') {
+            errors.bookingTime = 'Vui lòng chọn giờ đặt lịch';
+        } else {
+            // Kiểm tra format giờ HH:MM
+            const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+            if (!timeRegex.test(formData.bookingTime)) {
+                errors.bookingTime = 'Định dạng giờ không hợp lệ';
+            } else {
+                // Kiểm tra giờ có trong danh sách cho phép không
+                const validTimes = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
+                    '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
+                    '18:00', '19:00', '20:00', '21:00'];
+                if (!validTimes.includes(formData.bookingTime)) {
+                    errors.bookingTime = 'Giờ đặt lịch không hợp lệ';
+                }
+            }
+        }
+
+        setValidationErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!user) return;
+
+        // Validate form trước khi submit
+        if (!validateForm()) {
+            return;
+        }
 
         const bookingData: CreateBookingRequest = {
             userId: user.id,
@@ -75,6 +152,7 @@ const BookingPage: React.FC = () => {
         setIsModalOpen(false);
         setEditingBooking(null);
         setFormData({ courseId: 0, bookingDate: '', bookingTime: '' });
+        setValidationErrors({});
     };
 
     const handleEdit = (booking: Booking) => {
@@ -103,6 +181,7 @@ const BookingPage: React.FC = () => {
         setIsModalOpen(false);
         setEditingBooking(null);
         setFormData({ courseId: 0, bookingDate: '', bookingTime: '' });
+        setValidationErrors({});
     };
 
     const getCourseName = (courseId: number) => {
@@ -274,13 +353,19 @@ const BookingPage: React.FC = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Lớp học
+                            Lớp học <span className="text-red-500">*</span>
                         </label>
                         <select
                             value={formData.courseId}
-                            onChange={(e) => setFormData({ ...formData, courseId: parseInt(e.target.value) })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
+                            onChange={(e) => {
+                                setFormData({ ...formData, courseId: parseInt(e.target.value) });
+                                // Clear error khi user thay đổi
+                                if (validationErrors.courseId) {
+                                    setValidationErrors({ ...validationErrors, courseId: undefined });
+                                }
+                            }}
+                            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${validationErrors.courseId ? 'border-red-500' : 'border-gray-300'
+                                }`}
                         >
                             <option value={0}>Chọn lớp học</option>
                             {courses.map((course) => (
@@ -289,31 +374,49 @@ const BookingPage: React.FC = () => {
                                 </option>
                             ))}
                         </select>
+                        {validationErrors.courseId && (
+                            <p className="mt-1 text-sm text-red-600">{validationErrors.courseId}</p>
+                        )}
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Ngày đặt lịch
+                            Ngày đặt lịch <span className="text-red-500">*</span>
                         </label>
                         <input
                             type="date"
                             value={formData.bookingDate}
-                            onChange={(e) => setFormData({ ...formData, bookingDate: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            onChange={(e) => {
+                                setFormData({ ...formData, bookingDate: e.target.value });
+                                // Clear error khi user thay đổi
+                                if (validationErrors.bookingDate) {
+                                    setValidationErrors({ ...validationErrors, bookingDate: undefined });
+                                }
+                            }}
+                            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${validationErrors.bookingDate ? 'border-red-500' : 'border-gray-300'
+                                }`}
                             min={new Date().toISOString().split('T')[0]}
-                            required
                         />
+                        {validationErrors.bookingDate && (
+                            <p className="mt-1 text-sm text-red-600">{validationErrors.bookingDate}</p>
+                        )}
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Giờ đặt lịch
+                            Giờ đặt lịch <span className="text-red-500">*</span>
                         </label>
                         <select
                             value={formData.bookingTime}
-                            onChange={(e) => setFormData({ ...formData, bookingTime: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
+                            onChange={(e) => {
+                                setFormData({ ...formData, bookingTime: e.target.value });
+                                // Clear error khi user thay đổi
+                                if (validationErrors.bookingTime) {
+                                    setValidationErrors({ ...validationErrors, bookingTime: undefined });
+                                }
+                            }}
+                            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${validationErrors.bookingTime ? 'border-red-500' : 'border-gray-300'
+                                }`}
                         >
                             <option value="">Chọn giờ</option>
                             <option value="06:00">06:00</option>
@@ -333,6 +436,9 @@ const BookingPage: React.FC = () => {
                             <option value="20:00">20:00</option>
                             <option value="21:00">21:00</option>
                         </select>
+                        {validationErrors.bookingTime && (
+                            <p className="mt-1 text-sm text-red-600">{validationErrors.bookingTime}</p>
+                        )}
                     </div>
 
                     <div className="flex justify-end space-x-3 pt-4">
