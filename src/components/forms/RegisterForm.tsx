@@ -10,6 +10,7 @@ import Notification from '../common/Notification';
 interface RegisterFormData {
     fullName: string;
     email: string;
+    phone: string;
     password: string;
     confirmPassword: string;
 }
@@ -23,6 +24,10 @@ const schema = yup.object({
         .string()
         .email('Email không hợp lệ')
         .required('Email là bắt buộc'),
+    phone: yup
+        .string()
+        .matches(/^[0-9]{10,11}$/, 'Số điện thoại phải có 10-11 chữ số')
+        .required('Số điện thoại là bắt buộc'),
     password: yup
         .string()
         .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
@@ -99,6 +104,22 @@ const RegisterForm: React.FC = () => {
                     />
                     {errors.email && (
                         <p className="text-sm text-red-600">{errors.email.message}</p>
+                    )}
+                </div>
+
+                <div className="space-y-1">
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                        Số điện thoại
+                    </label>
+                    <input
+                        type="tel"
+                        id="phone"
+                        {...register('phone')}
+                        className="w-full h-10 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="0912345678"
+                    />
+                    {errors.phone && (
+                        <p className="text-sm text-red-600">{errors.phone.message}</p>
                     )}
                 </div>
 

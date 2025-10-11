@@ -40,9 +40,44 @@ const UserManagementPage: React.FC = () => {
         e.preventDefault();
 
         try {
+            // Validation: Check trùng email và số điện thoại
             if (editingUser) {
+                // Khi sửa: check với các user khác (không tính user đang sửa)
+                const duplicateEmail = users.find(
+                    u => u.id !== editingUser.id && u.email.toLowerCase() === formData.email.toLowerCase()
+                );
+                if (duplicateEmail) {
+                    alert('Email này đã được sử dụng bởi người dùng khác!');
+                    return;
+                }
+
+                const duplicatePhone = users.find(
+                    u => u.id !== editingUser.id && u.phone === formData.phone && formData.phone !== ''
+                );
+                if (duplicatePhone) {
+                    alert('Số điện thoại này đã được sử dụng bởi người dùng khác!');
+                    return;
+                }
+
                 await authApi.updateUser(editingUser.id, formData);
             } else {
+                // Khi thêm mới: check với tất cả user
+                const duplicateEmail = users.find(
+                    u => u.email.toLowerCase() === formData.email.toLowerCase()
+                );
+                if (duplicateEmail) {
+                    alert('Email này đã tồn tại trong hệ thống!');
+                    return;
+                }
+
+                const duplicatePhone = users.find(
+                    u => u.phone === formData.phone && formData.phone !== ''
+                );
+                if (duplicatePhone) {
+                    alert('Số điện thoại này đã tồn tại trong hệ thống!');
+                    return;
+                }
+
                 const registerData = {
                     ...formData,
                     confirmPassword: formData.password

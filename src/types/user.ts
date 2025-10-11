@@ -17,6 +17,7 @@ export interface RegisterRequest {
     password: string;
     confirmPassword: string;
     fullName: string;
+    phone?: string;
 }
 
 export interface AuthState {

@@ -1,28 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../hooks';
-import { fetchAllBookings, filterBookings, updateBooking } from '../../slices/bookingSlice';
+import { fetchAllBookings, filterBookings, updateBooking, deleteBooking, createBooking } from '../../slices/bookingSlice';
 import { fetchCourses } from '../../slices/courseSlice';
+import { authApi } from '../../apis';
 import CustomModal from '../../components/ui/CustomModal';
+import ConfirmModal from '../../components/ui/ConfirmModal';
 import Spinner from '../../components/common/Spinner';
 import BookingStats from '../../components/charts/BookingStats';
-import { BookingWithDetails, UpdateBookingRequest, BookingFilters } from '../../types';
+import { BookingWithDetails, UpdateBookingRequest, BookingFilters, User, CreateBookingRequest } from '../../types';
 
 const BookingManagementPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const { bookings, isLoading, error } = useAppSelector((state) => state.booking);
     const { courses } = useAppSelector((state) => state.course);
 
+    const [users, setUsers] = useState<User[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingBooking, setEditingBooking] = useState<BookingWithDetails | null>(null);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [bookingToDelete, setBookingToDelete] = useState<BookingWithDetails | null>(null);
     const [filters, setFilters] = useState<BookingFilters>({});
     const [formData, setFormData] = useState({
+        userId: 0,
+        courseId: 0,
+        bookingDate: '',
+        bookingTime: '',
         status: 'pending' as 'pending' | 'confirmed' | 'cancelled',
     });
 
     useEffect(() => {
         dispatch(fetchAllBookings());
         dispatch(fetchCourses());
+        fetchUsers();
     }, [dispatch]);
+
+    const fetchUsers = async () => {
+        try {
+            const userList = await authApi.getAllUsers();
+            setUsers(userList);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        }
+    };
 
     const handleFilter = () => {
         dispatch(filterBookings(filters));
@@ -35,28 +54,72 @@ const BookingManagementPage: React.FC = () => {
 
     const handleEdit = (booking: BookingWithDetails) => {
         setEditingBooking(booking);
-        setFormData({ status: booking.status });
+        setFormData({
+            userId: booking.userId,
+            courseId: booking.courseId,
+            bookingDate: booking.bookingDate,
+            bookingTime: booking.bookingTime,
+            status: booking.status,
+        });
         setIsModalOpen(true);
+    };
+
+    const handleDelete = (booking: BookingWithDetails) => {
+        setBookingToDelete(booking);
+        setIsConfirmModalOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (bookingToDelete) {
+            dispatch(deleteBooking(bookingToDelete.id));
+            setBookingToDelete(null);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
         if (editingBooking) {
+            // Sửa booking
             const updateData: UpdateBookingRequest = {
                 id: editingBooking.id,
+                bookingDate: formData.bookingDate,
+                bookingTime: formData.bookingTime,
                 status: formData.status,
             };
             dispatch(updateBooking(updateData));
+        } else {
+            // Thêm booking mới
+            const createData: CreateBookingRequest = {
+                userId: formData.userId,
+                courseId: formData.courseId,
+                bookingDate: formData.bookingDate,
+                bookingTime: formData.bookingTime,
+            };
+            dispatch(createBooking(createData));
         }
 
         setIsModalOpen(false);
         setEditingBooking(null);
+        setFormData({
+            userId: 0,
+            courseId: 0,
+            bookingDate: '',
+            bookingTime: '',
+            status: 'pending',
+        });
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setEditingBooking(null);
+        setFormData({
+            userId: 0,
+            courseId: 0,
+            bookingDate: '',
+            bookingTime: '',
+            status: 'pending',
+        });
     };
 
     const getStatusColor = (status: string) => {
@@ -98,6 +161,12 @@ const BookingManagementPage: React.FC = () => {
             <div className="space-y-6">
                 <div className="flex justify-between items-center">
                     <h2 className="text-3xl font-bold text-gray-800">Quản lý lịch đặt</h2>
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                    >
+                        Thêm lịch đặt
+                    </button>
                 </div>
 
                 {/* Thống kê và biểu đồ */}
@@ -246,12 +315,18 @@ const BookingManagementPage: React.FC = () => {
                                                 {getStatusText(booking.status)}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                                             <button
                                                 onClick={() => handleEdit(booking)}
                                                 className="text-blue-600 hover:text-blue-900"
                                             >
-                                                Cập nhật trạng thái
+                                                Sửa
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(booking)}
+                                                className="text-red-600 hover:text-red-900"
+                                            >
+                                                Xóa
                                             </button>
                                         </td>
                                     </tr>
@@ -262,14 +337,104 @@ const BookingManagementPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* Update Status Modal */}
+            {/* Booking Modal */}
             <CustomModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
-                title="Cập nhật trạng thái lịch đặt"
-                size="sm"
+                title={editingBooking ? 'Sửa lịch đặt' : 'Thêm lịch đặt mới'}
+                size="md"
             >
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Người dùng <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            value={formData.userId}
+                            onChange={(e) => setFormData({ ...formData, userId: parseInt(e.target.value) })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                            disabled={!!editingBooking}
+                        >
+                            <option value={0}>Chọn người dùng</option>
+                            {users.filter(u => u.role === 'user').map((user) => (
+                                <option key={user.id} value={user.id}>
+                                    {user.fullName} ({user.email})
+                                </option>
+                            ))}
+                        </select>
+                        {editingBooking && (
+                            <p className="mt-1 text-sm text-gray-500">Không thể thay đổi người dùng khi sửa</p>
+                        )}
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Lớp học <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            value={formData.courseId}
+                            onChange={(e) => setFormData({ ...formData, courseId: parseInt(e.target.value) })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                            disabled={!!editingBooking}
+                        >
+                            <option value={0}>Chọn lớp học</option>
+                            {courses.map((course) => (
+                                <option key={course.id} value={course.id}>
+                                    {course.name} - {course.type}
+                                </option>
+                            ))}
+                        </select>
+                        {editingBooking && (
+                            <p className="mt-1 text-sm text-gray-500">Không thể thay đổi lớp học khi sửa</p>
+                        )}
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Ngày đặt lịch <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="date"
+                            value={formData.bookingDate}
+                            onChange={(e) => setFormData({ ...formData, bookingDate: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                            min={new Date().toISOString().split('T')[0]}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Giờ đặt lịch <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            value={formData.bookingTime}
+                            onChange={(e) => setFormData({ ...formData, bookingTime: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                        >
+                            <option value="">Chọn giờ</option>
+                            <option value="06:00">06:00</option>
+                            <option value="07:00">07:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                        </select>
+                    </div>
+
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Trạng thái
@@ -297,11 +462,23 @@ const BookingManagementPage: React.FC = () => {
                             type="submit"
                             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
                         >
-                            Cập nhật
+                            {editingBooking ? 'Cập nhật' : 'Thêm mới'}
                         </button>
                     </div>
                 </form>
             </CustomModal>
+
+            {/* Confirm Delete Modal */}
+            <ConfirmModal
+                isOpen={isConfirmModalOpen}
+                onClose={() => setIsConfirmModalOpen(false)}
+                onConfirm={confirmDelete}
+                title="Xác nhận xóa lịch đặt"
+                message={`Bạn có chắc chắn muốn xóa lịch đặt của "${bookingToDelete?.user?.fullName}" cho lớp "${bookingToDelete?.course?.name}"?`}
+                confirmText="Xóa"
+                cancelText="Hủy"
+                type="danger"
+            />
         </div>
     );
 };

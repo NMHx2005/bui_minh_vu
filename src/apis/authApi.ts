@@ -24,7 +24,15 @@ export const authApi = {
         // Kiểm tra email đã tồn tại chưa
         const existingUsers = await axiosClient.get(`/users?email=${userData.email}`);
         if (existingUsers.data.length > 0) {
-            throw new Error('Email đã tồn tại');
+            throw new Error('Email đã tồn tại trong hệ thống!');
+        }
+
+        // Kiểm tra số điện thoại đã tồn tại chưa (nếu có phone trong userData)
+        if (userData.phone) {
+            const existingPhone = await axiosClient.get(`/users?phone=${userData.phone}`);
+            if (existingPhone.data.length > 0) {
+                throw new Error('Số điện thoại đã tồn tại trong hệ thống!');
+            }
         }
 
         // Tạo user mới
@@ -33,7 +41,7 @@ export const authApi = {
             password: userData.password,
             role: 'user' as const,
             fullName: userData.fullName,
-            phone: '', // Default empty phone
+            phone: userData.phone || '', // Lấy phone từ userData hoặc default empty
         };
 
         const response = await axiosClient.post('/users', newUser);

@@ -271,29 +271,6 @@
       }
     },
     {
-      "id": 504,
-      "userId": 4,
-      "courseId": 104,
-      "bookingDate": "2025-10-07",
-      "bookingTime": "10:00",
-      "status": "cancelled",
-      "createdAt": "2025-09-27T09:15:00Z",
-      "notes": "Hủy do công việc",
-      "user": {
-        "id": 4,
-        "email": "user3@gmail.com",
-        "fullName": "Lê Văn C",
-        "role": "user",
-        "phone": "0923456789"
-      },
-      "course": {
-        "id": 104,
-        "name": "Pilates Core",
-        "type": "Pilates",
-        "price": 180000
-      }
-    },
-    {
       "id": 505,
       "userId": 2,
       "courseId": 105,
