@@ -19,6 +19,12 @@ const UserManagementPage: React.FC = () => {
         phone: '',
         role: 'user' as 'admin' | 'user',
     });
+    const [formErrors, setFormErrors] = useState({
+        fullName: '',
+        email: '',
+        password: '',
+        phone: '',
+    });
 
     useEffect(() => {
         fetchUsers();
@@ -36,8 +42,55 @@ const UserManagementPage: React.FC = () => {
         }
     };
 
+    const validateForm = () => {
+        const errors = {
+            fullName: '',
+            email: '',
+            password: '',
+            phone: '',
+        };
+
+        // Validate fullName
+        if (!formData.fullName.trim()) {
+            errors.fullName = 'Họ tên không được để trống';
+        } else if (formData.fullName.trim().length < 2) {
+            errors.fullName = 'Họ tên phải có ít nhất 2 ký tự';
+        }
+
+        // Validate email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!formData.email.trim()) {
+            errors.email = 'Email không được để trống';
+        } else if (!emailRegex.test(formData.email)) {
+            errors.email = 'Email không đúng định dạng';
+        }
+
+        // Validate password (chỉ khi thêm mới hoặc có thay đổi)
+        if (!editingUser && !formData.password.trim()) {
+            errors.password = 'Mật khẩu không được để trống';
+        } else if (formData.password.trim() && formData.password.length < 6) {
+            errors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+        }
+
+        // Validate phone
+        const phoneRegex = /^[0-9]{10,11}$/;
+        if (!formData.phone.trim()) {
+            errors.phone = 'Số điện thoại không được để trống';
+        } else if (!phoneRegex.test(formData.phone.replace(/\s/g, ''))) {
+            errors.phone = 'Số điện thoại phải có 10-11 chữ số';
+        }
+
+        setFormErrors(errors);
+        return !Object.values(errors).some(error => error !== '');
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Validate form trước khi submit
+        if (!validateForm()) {
+            return;
+        }
 
         try {
             // Validation: Check trùng email và số điện thoại
@@ -47,7 +100,7 @@ const UserManagementPage: React.FC = () => {
                     u => u.id !== editingUser.id && u.email.toLowerCase() === formData.email.toLowerCase()
                 );
                 if (duplicateEmail) {
-                    alert('Email này đã được sử dụng bởi người dùng khác!');
+                    setFormErrors(prev => ({ ...prev, email: 'Email này đã được sử dụng bởi người dùng khác!' }));
                     return;
                 }
 
@@ -55,7 +108,7 @@ const UserManagementPage: React.FC = () => {
                     u => u.id !== editingUser.id && u.phone === formData.phone && formData.phone !== ''
                 );
                 if (duplicatePhone) {
-                    alert('Số điện thoại này đã được sử dụng bởi người dùng khác!');
+                    setFormErrors(prev => ({ ...prev, phone: 'Số điện thoại này đã được sử dụng bởi người dùng khác!' }));
                     return;
                 }
 
@@ -66,7 +119,7 @@ const UserManagementPage: React.FC = () => {
                     u => u.email.toLowerCase() === formData.email.toLowerCase()
                 );
                 if (duplicateEmail) {
-                    alert('Email này đã tồn tại trong hệ thống!');
+                    setFormErrors(prev => ({ ...prev, email: 'Email này đã tồn tại trong hệ thống!' }));
                     return;
                 }
 
@@ -74,7 +127,7 @@ const UserManagementPage: React.FC = () => {
                     u => u.phone === formData.phone && formData.phone !== ''
                 );
                 if (duplicatePhone) {
-                    alert('Số điện thoại này đã tồn tại trong hệ thống!');
+                    setFormErrors(prev => ({ ...prev, phone: 'Số điện thoại này đã tồn tại trong hệ thống!' }));
                     return;
                 }
 
@@ -88,6 +141,7 @@ const UserManagementPage: React.FC = () => {
             setIsModalOpen(false);
             setEditingUser(null);
             setFormData({ fullName: '', email: '', password: '', phone: '', role: 'user' });
+            setFormErrors({ fullName: '', email: '', password: '', phone: '' });
             fetchUsers();
         } catch (error: any) {
             alert(error.message || 'Có lỗi xảy ra');
@@ -103,6 +157,7 @@ const UserManagementPage: React.FC = () => {
             phone: user.phone || '',
             role: user.role || 'user',
         });
+        setFormErrors({ fullName: '', email: '', password: '', phone: '' });
         setIsModalOpen(true);
     };
 
@@ -127,6 +182,7 @@ const UserManagementPage: React.FC = () => {
         setIsModalOpen(false);
         setEditingUser(null);
         setFormData({ fullName: '', email: '', password: '', phone: '', role: 'user' });
+        setFormErrors({ fullName: '', email: '', password: '', phone: '' });
     };
 
     if (isLoading) {
@@ -234,9 +290,13 @@ const UserManagementPage: React.FC = () => {
                             type="text"
                             value={formData.fullName || ''}
                             onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.fullName ? 'border-red-500' : 'border-gray-300'
+                                }`}
                             required
                         />
+                        {formErrors.fullName && (
+                            <p className="mt-1 text-sm text-red-600">{formErrors.fullName}</p>
+                        )}
                     </div>
 
                     <div>
@@ -247,9 +307,13 @@ const UserManagementPage: React.FC = () => {
                             type="email"
                             value={formData.email || ''}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.email ? 'border-red-500' : 'border-gray-300'
+                                }`}
                             required
                         />
+                        {formErrors.email && (
+                            <p className="mt-1 text-sm text-red-600">{formErrors.email}</p>
+                        )}
                     </div>
 
                     <div>
@@ -260,9 +324,13 @@ const UserManagementPage: React.FC = () => {
                             type="tel"
                             value={formData.phone || ''}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.phone ? 'border-red-500' : 'border-gray-300'
+                                }`}
                             required
                         />
+                        {formErrors.phone && (
+                            <p className="mt-1 text-sm text-red-600">{formErrors.phone}</p>
+                        )}
                     </div>
 
                     <div>
@@ -273,9 +341,13 @@ const UserManagementPage: React.FC = () => {
                             type="password"
                             value={formData.password || ''}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.password ? 'border-red-500' : 'border-gray-300'
+                                }`}
                             required={!editingUser}
                         />
+                        {formErrors.password && (
+                            <p className="mt-1 text-sm text-red-600">{formErrors.password}</p>
+                        )}
                     </div>
 
                     <div>

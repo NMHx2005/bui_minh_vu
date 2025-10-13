@@ -136,7 +136,7 @@ const authSlice = createSlice({
                 state.user = null;
                 state.isLoggedIn = false;
                 state.error = null;
-                state.successMessage = null; // Clear success message khi logout
+                state.successMessage = 'Đăng xuất thành công!'; // Thông báo đăng xuất thành công
             });
     },
 });

@@ -27,14 +27,94 @@ const CourseManagementPage: React.FC = () => {
         equipment: [] as string[],
         schedule: {} as { [key: string]: string[] },
     });
+    const [formErrors, setFormErrors] = useState({
+        name: '',
+        type: '',
+        description: '',
+        price: '',
+        imageUrl: '',
+        duration: '',
+        instructor: '',
+        maxStudents: '',
+    });
     const [imagePreviewError, setImagePreviewError] = useState(false);
 
     useEffect(() => {
         dispatch(fetchCourses());
     }, [dispatch]);
 
+    const validateForm = () => {
+        const errors = {
+            name: '',
+            type: '',
+            description: '',
+            price: '',
+            imageUrl: '',
+            duration: '',
+            instructor: '',
+            maxStudents: '',
+        };
+
+        // Validate name
+        if (!formData.name.trim()) {
+            errors.name = 'Tên lớp học không được để trống';
+        } else if (formData.name.trim().length < 2) {
+            errors.name = 'Tên lớp học phải có ít nhất 2 ký tự';
+        }
+
+        // Validate type
+        if (!formData.type.trim()) {
+            errors.type = 'Loại lớp học không được để trống';
+        }
+
+        // Validate description
+        if (!formData.description.trim()) {
+            errors.description = 'Mô tả không được để trống';
+        } else if (formData.description.trim().length < 10) {
+            errors.description = 'Mô tả phải có ít nhất 10 ký tự';
+        }
+
+        // Validate price
+        if (formData.price <= 0) {
+            errors.price = 'Giá phải lớn hơn 0';
+        }
+
+        // Validate imageUrl
+        if (!formData.imageUrl.trim()) {
+            errors.imageUrl = 'URL hình ảnh không được để trống';
+        } else {
+            const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+            if (!urlRegex.test(formData.imageUrl)) {
+                errors.imageUrl = 'URL hình ảnh không đúng định dạng';
+            }
+        }
+
+        // Validate duration
+        if (formData.duration <= 0) {
+            errors.duration = 'Thời lượng phải lớn hơn 0 phút';
+        }
+
+        // Validate instructor
+        if (!formData.instructor.trim()) {
+            errors.instructor = 'Tên huấn luyện viên không được để trống';
+        }
+
+        // Validate maxStudents
+        if (formData.maxStudents <= 0) {
+            errors.maxStudents = 'Số học viên tối đa phải lớn hơn 0';
+        }
+
+        setFormErrors(errors);
+        return !Object.values(errors).some(error => error !== '');
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Validate form trước khi submit
+        if (!validateForm()) {
+            return;
+        }
 
         if (editingCourse) {
             const updateData: UpdateCourseRequest = {
@@ -63,6 +143,16 @@ const CourseManagementPage: React.FC = () => {
             equipment: [],
             schedule: {}
         });
+        setFormErrors({
+            name: '',
+            type: '',
+            description: '',
+            price: '',
+            imageUrl: '',
+            duration: '',
+            instructor: '',
+            maxStudents: '',
+        });
     };
 
     const handleEdit = (course: Course) => {
@@ -80,6 +170,16 @@ const CourseManagementPage: React.FC = () => {
             level: course.level,
             equipment: course.equipment,
             schedule: course.schedule,
+        });
+        setFormErrors({
+            name: '',
+            type: '',
+            description: '',
+            price: '',
+            imageUrl: '',
+            duration: '',
+            instructor: '',
+            maxStudents: '',
         });
         setIsModalOpen(true);
     };
@@ -112,6 +212,16 @@ const CourseManagementPage: React.FC = () => {
             level: 'Beginner',
             equipment: [],
             schedule: {}
+        });
+        setFormErrors({
+            name: '',
+            type: '',
+            description: '',
+            price: '',
+            imageUrl: '',
+            duration: '',
+            instructor: '',
+            maxStudents: '',
         });
     };
 
@@ -266,9 +376,13 @@ const CourseManagementPage: React.FC = () => {
                                 type="text"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.name ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                                 required
                             />
+                            {formErrors.name && (
+                                <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>
+                            )}
                         </div>
 
                         <div>
@@ -278,7 +392,8 @@ const CourseManagementPage: React.FC = () => {
                             <select
                                 value={formData.type}
                                 onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.type ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                                 required
                             >
                                 <option value="">Chọn loại</option>
@@ -289,6 +404,9 @@ const CourseManagementPage: React.FC = () => {
                                 <option value="Cardio">Cardio</option>
                                 <option value="Strength">Strength</option>
                             </select>
+                            {formErrors.type && (
+                                <p className="mt-1 text-sm text-red-600">{formErrors.type}</p>
+                            )}
                         </div>
                     </div>
 
@@ -301,10 +419,14 @@ const CourseManagementPage: React.FC = () => {
                                 type="number"
                                 value={formData.price}
                                 onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) || 0 })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.price ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                                 min="0"
                                 required
                             />
+                            {formErrors.price && (
+                                <p className="mt-1 text-sm text-red-600">{formErrors.price}</p>
+                            )}
                         </div>
 
                         <div>
@@ -315,11 +437,15 @@ const CourseManagementPage: React.FC = () => {
                                 type="number"
                                 value={formData.duration}
                                 onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) || 60 })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.duration ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                                 min="15"
                                 max="180"
                                 required
                             />
+                            {formErrors.duration && (
+                                <p className="mt-1 text-sm text-red-600">{formErrors.duration}</p>
+                            )}
                         </div>
                     </div>
 
@@ -334,9 +460,13 @@ const CourseManagementPage: React.FC = () => {
                                 setFormData({ ...formData, imageUrl: e.target.value });
                                 setImagePreviewError(false);
                             }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.imageUrl ? 'border-red-500' : 'border-gray-300'
+                                }`}
                             placeholder="https://example.com/image.jpg"
                         />
+                        {formErrors.imageUrl && (
+                            <p className="mt-1 text-sm text-red-600">{formErrors.imageUrl}</p>
+                        )}
 
                         {/* Image Preview */}
                         {formData.imageUrl && (
@@ -374,6 +504,44 @@ const CourseManagementPage: React.FC = () => {
                         )}
                     </div>
 
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Huấn luyện viên
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.instructor}
+                                onChange={(e) => setFormData({ ...formData, instructor: e.target.value })}
+                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.instructor ? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                                required
+                            />
+                            {formErrors.instructor && (
+                                <p className="mt-1 text-sm text-red-600">{formErrors.instructor}</p>
+                            )}
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Số học viên tối đa
+                            </label>
+                            <input
+                                type="number"
+                                value={formData.maxStudents}
+                                onChange={(e) => setFormData({ ...formData, maxStudents: parseInt(e.target.value) || 20 })}
+                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.maxStudents ? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                                min="1"
+                                max="50"
+                                required
+                            />
+                            {formErrors.maxStudents && (
+                                <p className="mt-1 text-sm text-red-600">{formErrors.maxStudents}</p>
+                            )}
+                        </div>
+                    </div>
+
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Mô tả
@@ -381,10 +549,14 @@ const CourseManagementPage: React.FC = () => {
                         <textarea
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.description ? 'border-red-500' : 'border-gray-300'
+                                }`}
                             rows={3}
                             required
                         />
+                        {formErrors.description && (
+                            <p className="mt-1 text-sm text-red-600">{formErrors.description}</p>
+                        )}
                     </div>
 
                     <div className="flex justify-end space-x-3 pt-4">
